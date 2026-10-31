@@ -7,13 +7,22 @@ xdebug_enabled: false
 additional_hostnames: []
 additional_fqdns: []
 database:
-    type: mariadb
-    version: "11.8"
+    type: mysql
+    version: "8.4"
 use_dns_when_possible: true
 composer_version: "2"
-web_environment: []
+web_environment:
+    - DB_NAME=db
+    - DB_USER=db
+    - DB_PASS=db
+    - DB_TYPE=mysql
+    - DB_VERSION=8.4
+    - DB_PORT=3306
+    - DB_HOST=db
 nodejs_version: "24"
 corepack_enable: false
+xhgui_https_port: "8142"
+xhgui_http_port: "8143"
 
 # Key features of DDEV's config.yaml:
 

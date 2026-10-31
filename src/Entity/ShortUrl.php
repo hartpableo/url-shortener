@@ -1,6 +1,6 @@
 <?php
 
-namespace UrlShortener;
+namespace UrlShortener\Entity;
 
 use DateTimeImmutable;
 
