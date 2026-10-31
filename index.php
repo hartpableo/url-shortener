@@ -36,6 +36,14 @@ if (empty($matchedRoute)) {
 
 $matchedRoute = reset($matchedRoute);
 $callbackResponse = call_user_func_array($matchedRoute['callback'], $matchedRoute['params'] ?? []);
+
 /** @var ResponseInterface $callbackResponse */
-echo $callbackResponse->getResponse();
+$response = $callbackResponse->getResponse();
+if (!$response) {
+  http_response_code(500);
+  echo "Internal server error";
+  exit;
+}
+
+echo $response;
 exit;
