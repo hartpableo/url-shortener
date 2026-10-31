@@ -1,0 +1,29 @@
+form[data-is-submitting] {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+form[data-is-submitting] :where(button, input, select, textarea) {
+  pointer-events: none;
+}
+
+#messages {
+  margin-block-end: 1rem;
+}
+
+.message {
+  padding: .45em;
+  border: 2px solid hsl(from var(--color) h s calc(l - 15));
+  background: hsla(from var(--color) h s calc(l - 8) / .3);
+  font-weight: 600;
+  margin-block-end: .5em;
+  color: hsl(from var(--color) h s calc(l - 10));
+}
+
+.message[data-type=success] {
+  --color: #219302;
+}
+
+.message[data-type=error] {
+  --color: #c71313;
+}

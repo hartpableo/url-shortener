@@ -11,10 +11,21 @@ class CreateShortUrl {
   }
 
   public function create(): JsonResponse {
+    sleep(25);
     return new JsonResponse([
       'ok' => TRUE,
       'data' => [
-        'message' => 'Hello from ' . __CLASS__
+
+      ],
+      'messages' => [
+        [
+          'type' => 'error',
+          'message' => 'test error message'
+        ],
+        [
+          'type' => 'success',
+          'message' => 'test success message'
+        ]
       ]
     ]);
   }
