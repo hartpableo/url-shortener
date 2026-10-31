@@ -1,0 +1,6 @@
+1. create new short url (/create)
+2. retrieve original url (/retrieve)
+3. update (/update)
+4. delete (/delete)
+5. statistics (/stats)
+
