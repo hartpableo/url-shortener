@@ -12,6 +12,16 @@ $request = new Request();
 $requestUri = $request->uri;
 $requestMethod = $request->method;
 
+function request(): Request {
+  static $instance = NULL;
+
+  if ($instance === NULL) {
+    $instance = new Request();
+  }
+
+  return $instance;
+}
+
 // Routing
 $routes = require __DIR__ . '/routes.php';
 $matchedRoute = array_filter($routes, function ($route) use ($requestMethod, $requestUri) {

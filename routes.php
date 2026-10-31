@@ -4,8 +4,13 @@ use UrlShortener\CreateShortUrl;
 
 return [
   [
+    'uri' => '/',
+    'callback' => [new CreateShortUrl(), 'index'],
+    'method' => ['GET'],
+  ],
+  [
     'uri' => '/create',
     'callback' => [new CreateShortUrl(), 'create'],
-    'method' => ['POST', 'GET'], // @todo: remove GET
+    'method' => ['POST'],
   ]
 ];
