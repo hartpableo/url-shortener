@@ -1,6 +1,6 @@
 <?php
 
-namespace UrlShortener;
+namespace UrlShortener\Response;
 
 final class JsonResponse implements ResponseInterface {
   public function __construct(

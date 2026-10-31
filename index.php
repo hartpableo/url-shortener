@@ -4,7 +4,7 @@
  */
 
 use UrlShortener\Request;
-use UrlShortener\ResponseInterface;
+use UrlShortener\Response\ResponseInterface;
 
 require_once __DIR__ . '/autoloader.php';
 

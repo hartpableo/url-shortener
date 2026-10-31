@@ -1,6 +1,6 @@
 <?php
 
-namespace UrlShortener;
+namespace UrlShortener\Response;
 
 class HtmlResponse implements ResponseInterface {
   public function __construct(
@@ -13,7 +13,7 @@ class HtmlResponse implements ResponseInterface {
   public function getResponse(): false|string {
     http_response_code($this->status);
     ob_start();
-    include __DIR__ . "/../templates/{$this->template}.tpl.php";
+    include __DIR__ . "/../../templates/{$this->template}.tpl.php";
     return ob_get_clean();
   }
 }

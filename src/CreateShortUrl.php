@@ -2,6 +2,9 @@
 
 namespace UrlShortener;
 
+use UrlShortener\Response\HtmlResponse;
+use UrlShortener\Response\JsonResponse;
+
 class CreateShortUrl {
   public function index(): HtmlResponse {
     return new HtmlResponse('home');

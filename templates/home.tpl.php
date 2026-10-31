@@ -3,6 +3,9 @@ require_once __DIR__ . '/header.tpl.php';
 ?>
 
   <h1>URL Shortener</h1>
+
+  <div hidden id="messages"></div>
+
   <form action="/create" id="create-short-url" method="post">
     <label>
       <span>URL:</span>
@@ -16,6 +19,21 @@ require_once __DIR__ . '/header.tpl.php';
         required
       >
     </label>
+    <br>
+    <br>
+    <label>
+      <span>Short Code:</span>
+      <input
+        type="url"
+        name="short_code"
+        id="short_code"
+        placeholder="/shortversion"
+        size="30"
+        required
+      >
+    </label>
+    <br>
+    <br>
     <button type="submit">Shorten</button>
   </form>
 
