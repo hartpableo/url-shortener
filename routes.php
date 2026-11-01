@@ -1,16 +1,16 @@
 <?php
 
-use UrlShortener\Controller\CreateShortUrl;
+use UrlShortener\Controller\ShortUrlController;
 
 return [
   [
     'uri' => '/',
-    'callback' => [new CreateShortUrl(), 'index'],
+    'callback' => [new ShortUrlController(), 'index'],
     'method' => ['GET'],
   ],
   [
     'uri' => '/create',
-    'callback' => [new CreateShortUrl(), 'create'],
+    'callback' => [new ShortUrlController(), 'create'],
     'method' => ['POST'],
   ]
 ];

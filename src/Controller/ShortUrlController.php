@@ -7,7 +7,7 @@ use UrlShortener\Repository\ShortUrlRepository;
 use UrlShortener\Response\HtmlResponse;
 use UrlShortener\Response\JsonResponse;
 
-class CreateShortUrl {
+class ShortUrlController {
   public function index(): HtmlResponse {
     return new HtmlResponse('home');
   }
