@@ -27,3 +27,7 @@ form[data-is-submitting] :where(button, input, select, textarea) {
 .message[data-type=error] {
   --color: #c71313;
 }
+
+.message[data-type=info] {
+  --color: #13c7b2;
+}

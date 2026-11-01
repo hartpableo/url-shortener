@@ -7,7 +7,7 @@ require __DIR__  . '/autoloader.php';
 
 $shortUrl = new ShortUrl(
   originalUrl: urlencode('https://google.com'),
-  shortVersion: 'samplesite',
+  shortVersion: htmlspecialchars('samplesite'),
   visitCount: 3,
   createdAt: new DateTimeImmutable('yesterday', new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
   updatedAt: new DateTimeImmutable('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s')

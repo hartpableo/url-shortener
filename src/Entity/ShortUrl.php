@@ -3,16 +3,22 @@
 namespace UrlShortener\Entity;
 
 use DateTimeImmutable;
+use DateTimeZone;
 
 class ShortUrl extends EntityBase {
+  private ?string $createdAt;
+  private ?string $updatedAt;
+
   public function __construct(
-    private readonly ?int               $id = NULL,
-    private readonly ?string            $originalUrl = NULL,
-    private readonly ?string            $shortVersion = NULL,
-    private readonly ?int               $visitCount = NULL,
-    private readonly ?string $createdAt = NULL,
-    private readonly ?string $updatedAt = NULL,
+    private readonly ?int    $id = NULL,
+    private readonly ?string $originalUrl = NULL,
+    private readonly ?string $shortVersion = NULL,
+    private readonly ?int    $visitCount = 0,
+    ?string $createdAt = NULL,
+    ?string $updatedAt = NULL,
   ) {
+    $this->createdAt = $createdAt ?? new DateTimeImmutable('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
+    $this->updatedAt  = $updatedAt ?? new DateTimeImmutable('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
   }
 
   public function getId(): ?int {

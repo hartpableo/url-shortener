@@ -58,6 +58,7 @@ require_once __DIR__ . '/header.tpl.php';
       }
 
       // Status messages
+      messagesWrapper.innerHTML = "";
       if (state.messages.length) {
         messagesWrapper.removeAttribute("hidden");
         state.messages.forEach(m => {
@@ -76,7 +77,7 @@ require_once __DIR__ . '/header.tpl.php';
     const submitForm = async (payload) => {
       const res = await fetch("/create", {
         method: "POST",
-        body: payload
+        body: JSON.stringify(payload)
       });
       const resJson = await res.json();
       if (!resJson.ok) {
