@@ -8,16 +8,27 @@ use UrlShortener\Response\HtmlResponse;
 use UrlShortener\Response\JsonResponse;
 
 class ShortUrlController {
+  private ShortUrlRepository $shortUrlRepository;
+
+  public function __construct() {
+    $this->shortUrlRepository = new ShortUrlRepository();
+  }
+
   public function index(): HtmlResponse {
     return new HtmlResponse('home');
   }
 
+  public function getAll(): JsonResponse {
+    return new JsonResponse([
+      'ok' => TRUE,
+      'data' => $this->shortUrlRepository->findAll()
+    ]);
+  }
+
   public function create(): JsonResponse {
-    $shortUrlRepo = new ShortUrlRepository();
     $originalUrl = request()->input('originalUrl');
     $shortVersion = request()->input('shortVersion');
     $errors = [];
-//    error_log(1);
 
     // Check required fields
     if (empty($originalUrl)) {
@@ -29,7 +40,6 @@ class ShortUrlController {
     }
 
     if (!empty($errors)) {
-//      error_log(print_r([2, $errors], true));
       return new JsonResponse([
         'ok' => FALSE,
         'messages' => array_map(
@@ -39,13 +49,12 @@ class ShortUrlController {
       ]);
     }
 
-//    error_log(3);
     // Sanitize
     $originalUrl = urlencode($originalUrl);
     $shortVersion = urlencode($shortVersion);
 
     // Bail if already exists
-    $existing = $shortUrlRepo->checkIfExists([
+    $existing = $this->shortUrlRepository->checkIfExists([
       'original_url' => $originalUrl,
       'short_version' => $shortVersion
     ]);
@@ -55,11 +64,11 @@ class ShortUrlController {
         'messages' => [
           [
             'type' => 'info',
-            'text' => 'Already exists'
+            'message' => 'Already exists'
           ]
         ],
         'data' => [
-          'url' => $shortUrlRepo->findBy([
+          'url' => $this->shortUrlRepository->findBy([
             'original_url' => $originalUrl,
             'short_version' => $shortVersion
           ])
@@ -67,16 +76,14 @@ class ShortUrlController {
       ]);
     }
 
-//    error_log(4);
     $newShortUrl = new ShortUrl(
       originalUrl: $originalUrl,
       shortVersion: $shortVersion,
     );
 
     // Insert
-    $inserted = $shortUrlRepo->insert($newShortUrl);
+    $inserted = $this->shortUrlRepository->insert($newShortUrl);
     if (!$inserted) {
-//      error_log(5);
       return new JsonResponse([
         'ok' => FALSE,
         'messages' => [
@@ -88,7 +95,6 @@ class ShortUrlController {
       ]);
     }
 
-//    error_log(6);
     // Done
     return new JsonResponse([
       'ok' => TRUE,

@@ -6,19 +6,18 @@ use DateTimeImmutable;
 use DateTimeZone;
 
 class ShortUrl extends EntityBase {
-  private ?string $createdAt;
-  private ?string $updatedAt;
-
   public function __construct(
     private readonly ?int    $id = NULL,
     private readonly ?string $originalUrl = NULL,
     private readonly ?string $shortVersion = NULL,
     private readonly ?int    $visitCount = 0,
-    ?string $createdAt = NULL,
-    ?string $updatedAt = NULL,
+    private ?string $createdAt = NULL,
+    private ?string $updatedAt = NULL,
   ) {
-    $this->createdAt = $createdAt ?? new DateTimeImmutable('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
-    $this->updatedAt  = $updatedAt ?? new DateTimeImmutable('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
+    $now = (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
+
+    $this->createdAt = $this->createdAt ?? $now;
+    $this->updatedAt  = $this->updatedAt ?? $now;
   }
 
   public function getId(): ?int {

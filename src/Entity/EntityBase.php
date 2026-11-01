@@ -10,6 +10,20 @@ class EntityBase {
     return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $property));
   }
 
+  public function toArray(): array {
+    $reflection = new ReflectionClass(static::class);
+    $properties = $reflection->getProperties();
+    $final_array = [];
+    foreach ($properties as $property) {
+      $method = "get{$property->getName()}";
+      if (method_exists(static::class, $method)) {
+        $final_array[$property->getName()] = $this->$method();
+      }
+    }
+
+    return $final_array;
+  }
+
   public function getPropColumns(): array {
     $final_array = [];
     $propMethods = $this->getPropMethods();

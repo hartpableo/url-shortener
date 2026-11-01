@@ -15,5 +15,7 @@ $shortUrl = new ShortUrl(
 $shortUrlRepo = new ShortUrlRepository();
 //print_r($shortUrl->getPropColumns());
 //print_r(get_class_methods($shortUrl));
-$insertQuery = $shortUrlRepo->insert($shortUrl);
-print_r($insertQuery);
+//$insertQuery = $shortUrlRepo->insert($shortUrl);
+//print_r($insertQuery);
+$reflection = new ReflectionClass($shortUrl);
+print_r($reflection->getProperties());

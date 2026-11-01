@@ -9,6 +9,11 @@ return [
     'method' => ['GET'],
   ],
   [
+    'uri' => '/urls',
+    'callback' => [new ShortUrlController(), 'getAll'],
+    'method' => ['GET'],
+  ],
+  [
     'uri' => '/create',
     'callback' => [new ShortUrlController(), 'create'],
     'method' => ['POST'],

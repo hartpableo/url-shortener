@@ -18,4 +18,27 @@ class ShortUrlRepository extends RepositoryBase {
       updatedAt: $entity['updated_at']
     );
   }
+
+  public function findAll(
+    array $args = [],
+    ?int $offset = NULL,
+    ?int $limit = NULL
+  ): array {
+    $all = parent::findAll($args, $offset, $limit);
+    $all['data'] = array_map(
+      function ($entity) {
+        return new ShortUrl(
+          id: $entity['id'],
+          originalUrl: $entity['original_url'],
+          shortVersion: $entity['short_version'],
+          visitCount: $entity['visit_count'],
+          createdAt: $entity['created_at'],
+          updatedAt: $entity['updated_at']
+        )->toArray();
+      },
+      $all['data']
+    );
+
+    return $all;
+  }
 }

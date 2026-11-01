@@ -37,16 +37,64 @@ require_once __DIR__ . '/header.tpl.php';
     <button type="submit">Shorten</button>
   </form>
 
+  <div id="urls"></div>
+
   <script>
     // State
     let state = {
       isSubmitting: false,
       messages: [],
+      isFetchingUrls: false,
+      urls: []
     };
 
     // Components
     const form = document.getElementById("create-short-url");
     const messagesWrapper = document.getElementById("messages");
+    const urlsListWrapper = document.getElementById("urls");
+
+    // Render URLs list
+    const renderUrlsList = () => {
+      console.log(state.urls);
+      if (!state.urls.length) return;
+
+      state.urls.forEach(url => {
+        urlsListWrapper.insertAdjacentHTML("beforeend", `
+          <article>
+            <h4>${decodeURIComponent(url.shortVersion)}</h4>
+            <ul>
+              <li>Original: ${decodeURIComponent(url.originalUrl)}</li>
+              <li>Visit Count: ${url.visitCount}</li>
+              <li>Created: ${url.createdAt}</li>
+              <li>Updated: ${url.updatedAt}</li>
+            </ul>
+          </article>
+        `);
+      })
+    }
+
+    // Get URLs
+    const getUrls = async () => {
+      if (state.isFetchingUrls) {
+        return;
+      }
+
+      try {
+        state.isFetchingUrls = true;
+
+        const res = await fetch("/urls");
+        const resJson = await res.json();
+        if (!resJson.ok) {
+          throw Error("Error with fetching URLS");
+        }
+
+        state.urls = resJson.data.data;
+        return resJson;
+      } finally {
+        state.isFetchingUrls = false;
+        renderUrlsList();
+      }
+    }
 
     // Update state
     const updateState = () => {
@@ -55,6 +103,7 @@ require_once __DIR__ . '/header.tpl.php';
         form.setAttribute("data-is-submitting", "");
       } else {
         form.removeAttribute("data-is-submitting");
+        getUrls();
       }
 
       // Status messages
@@ -88,6 +137,7 @@ require_once __DIR__ . '/header.tpl.php';
     }
 
     updateState();
+    getUrls();
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -101,7 +151,6 @@ require_once __DIR__ . '/header.tpl.php';
         .then(data => {
           if (data?.messages?.length) {
             data.messages.forEach(m => {
-              console.log({m})
               state.messages.push(m);
             })
           }
