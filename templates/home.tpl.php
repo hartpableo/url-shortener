@@ -55,9 +55,9 @@ require_once __DIR__ . '/header.tpl.php';
 
     // Render URLs list
     const renderUrlsList = () => {
-      console.log(state.urls);
       if (!state.urls.length) return;
 
+      urlsListWrapper.innerHTML = "";
       state.urls.forEach(url => {
         urlsListWrapper.insertAdjacentHTML("beforeend", `
           <article>
@@ -116,6 +116,7 @@ require_once __DIR__ . '/header.tpl.php';
             `<div class="message" data-type="${m.type}">${m.message}</div>`
           );
         });
+        state.messages = [];
       } else {
         messagesWrapper.innerHTML = "";
         messagesWrapper.setAttribute("hidden", "hidden");

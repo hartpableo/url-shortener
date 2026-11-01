@@ -55,7 +55,6 @@ class ShortUrlController {
 
     // Bail if already exists
     $existing = $this->shortUrlRepository->checkIfExists([
-      'original_url' => $originalUrl,
       'short_version' => $shortVersion
     ]);
     if ($existing) {
@@ -69,7 +68,6 @@ class ShortUrlController {
         ],
         'data' => [
           'url' => $this->shortUrlRepository->findBy([
-            'original_url' => $originalUrl,
             'short_version' => $shortVersion
           ])
         ]
