@@ -1,6 +1,6 @@
 <?php
 
-namespace UrlShortener;
+namespace UrlShortener\Controller;
 
 use UrlShortener\Entity\ShortUrl;
 use UrlShortener\Repository\ShortUrlRepository;

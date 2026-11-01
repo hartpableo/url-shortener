@@ -1,6 +1,6 @@
 <?php
 
-use UrlShortener\CreateShortUrl;
+use UrlShortener\Controller\CreateShortUrl;
 
 return [
   [
