@@ -8,6 +8,7 @@ final class Request {
   public array $query;
   public array $body;
   public array $headers;
+  public string $full;
 
   public function __construct() {
     $this->method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -15,6 +16,12 @@ final class Request {
     $this->query = $_GET ?? NULL;
     $this->headers = $this->getHeaders();
     $this->body = $this->parseBody();
+
+    // Construct full URL
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+    $domainName = $_SERVER['HTTP_HOST'];
+    $requestUri = $_SERVER['REQUEST_URI'];
+    $this->full = $protocol . $domainName . $requestUri;
   }
 
   private function getHeaders(): array {

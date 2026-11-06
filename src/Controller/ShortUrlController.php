@@ -6,6 +6,8 @@ use UrlShortener\Entity\ShortUrl;
 use UrlShortener\Repository\ShortUrlRepository;
 use UrlShortener\Response\HtmlResponse;
 use UrlShortener\Response\JsonResponse;
+use UrlShortener\Response\NotFoundResponse;
+use UrlShortener\Response\RedirectResponse;
 
 class ShortUrlController {
   private ShortUrlRepository $shortUrlRepository;
@@ -23,6 +25,19 @@ class ShortUrlController {
       'ok' => TRUE,
       'data' => $this->shortUrlRepository->findAll()
     ]);
+  }
+
+  public function route(): RedirectResponse|string|NULL {
+    $shortUrl = $this->shortUrlRepository->findBy([
+      'short_version' => request()->uri
+    ]);
+//    print_r($shortUrl);exit;
+
+    if (!$shortUrl) {
+      return new NotFoundResponse('Not Found', TRUE)();
+    }
+
+    return new RedirectResponse($shortUrl->getOriginalUrl());
   }
 
   public function create(): JsonResponse {
@@ -51,7 +66,7 @@ class ShortUrlController {
 
     // Sanitize
     $originalUrl = urlencode($originalUrl);
-    $shortVersion = urlencode($shortVersion);
+    $shortVersion = urlencode(ltrim($shortVersion, '/') . '/');
 
     // Bail if already exists
     $existing = $this->shortUrlRepository->checkIfExists([
