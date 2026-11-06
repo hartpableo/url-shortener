@@ -7,12 +7,12 @@ use DateTimeZone;
 
 class ShortUrl extends EntityBase {
   public function __construct(
-    private readonly ?int    $id = NULL,
-    private readonly ?string $originalUrl = NULL,
-    private readonly ?string $shortVersion = NULL,
-    private readonly ?int    $visitCount = 0,
-    private ?string $createdAt = NULL,
-    private ?string $updatedAt = NULL,
+    public ?int    $id = NULL,
+    public ?string $originalUrl = NULL,
+    public ?string $shortVersion = NULL,
+    public ?int    $visitCount = 0,
+    public ?string $createdAt = NULL,
+    public ?string $updatedAt = NULL,
   ) {
     $now = (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
 
@@ -20,27 +20,10 @@ class ShortUrl extends EntityBase {
     $this->updatedAt  = $this->updatedAt ?? $now;
   }
 
-  public function getId(): ?int {
-    return $this->id;
-  }
-
-  public function getOriginalUrl(): ?string {
-    return $this->originalUrl;
-  }
-
-  public function getShortVersion(): ?string {
-    return $this->shortVersion;
-  }
-
-  public function getVisitCount(): ?int {
-    return $this->visitCount;
-  }
-
-  public function getCreatedAt(): ?string {
-    return $this->createdAt;
-  }
-
-  public function getUpdatedAt(): ?string {
-    return $this->updatedAt;
+  public function withIncrementedVisit(): self {
+    $self = clone $this;
+    $self->visitCount = $this->visitCount + 1;
+    $self->updatedAt = new DateTimeImmutable('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
+    return $self;
   }
 }

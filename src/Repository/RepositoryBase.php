@@ -13,22 +13,21 @@ class RepositoryBase {
     $this->db = new Database()->getConnection();
   }
 
-  public function insert(EntityBase $entity) {
+  public function insert(EntityBase $entity): bool {
     $columns = [];
-    $values = [];
+    $params = [];
 
-    foreach ($entity->getPropColumns() as $method => $column) {
+    foreach ($entity->toArray() as $column => $value) {
       if ($column === 'id') {
         continue;
       }
 
       $columns[] = $column;
-      $values[] = $entity->$method();
+      $params[":{$column}"] = $value;
     }
-    $params = array_combine($columns, $values);
 
     // Build query
-    $query = sprintf(
+    $query = \sprintf(
       "INSERT INTO %s (%s) VALUES (%s)",
       $this->table,
       implode(', ', $columns),
@@ -36,6 +35,31 @@ class RepositoryBase {
         fn($i) => ':' . $i,
         array_keys($params)
       ))
+    );
+
+    $stmt = $this->db->prepare($query);
+    return $stmt->execute($params);
+  }
+
+  public function update(EntityBase $entity): bool {
+    $params = [];
+    $updateStatement = [];
+
+    foreach ($entity->toArray() as $column => $value) {
+      if ($column === 'id') {
+        continue;
+      }
+
+      $params[":{$column}"] = $value;
+      $updateStatement[] = "{$column} = :{$column}";
+    }
+
+    // Build query
+    $query = \sprintf(
+      "UPDATE %s SET %s WHERE id = %s",
+      $this->table,
+      implode(', ', $updateStatement),
+      $entity->id
     );
 
     $stmt = $this->db->prepare($query);

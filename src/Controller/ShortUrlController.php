@@ -36,7 +36,9 @@ class ShortUrlController {
       return new NotFoundResponse('Not Found', TRUE)();
     }
 
-    return new RedirectResponse(urldecode($shortUrl->getOriginalUrl()));
+//    $updatedShortUrl = $this->shortUrlRepository->
+
+    return new RedirectResponse(urldecode($shortUrl->originalUrl));
   }
 
   public function create(): JsonResponse {
