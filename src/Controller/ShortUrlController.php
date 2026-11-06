@@ -29,15 +29,14 @@ class ShortUrlController {
 
   public function route(): RedirectResponse|string|NULL {
     $shortUrl = $this->shortUrlRepository->findBy([
-      'short_version' => request()->uri
+      'short_version' => urlencode(request()->uri)
     ]);
-//    print_r($shortUrl);exit;
 
     if (!$shortUrl) {
       return new NotFoundResponse('Not Found', TRUE)();
     }
 
-    return new RedirectResponse($shortUrl->getOriginalUrl());
+    return new RedirectResponse(urldecode($shortUrl->getOriginalUrl()));
   }
 
   public function create(): JsonResponse {
@@ -66,7 +65,7 @@ class ShortUrlController {
 
     // Sanitize
     $originalUrl = urlencode($originalUrl);
-    $shortVersion = urlencode(ltrim($shortVersion, '/') . '/');
+    $shortVersion = urlencode('/' . trim($shortVersion, '/'));
 
     // Bail if already exists
     $existing = $this->shortUrlRepository->checkIfExists([

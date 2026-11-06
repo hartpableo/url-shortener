@@ -37,7 +37,9 @@ require_once __DIR__ . '/header.tpl.php';
     <button type="submit">Shorten</button>
   </form>
 
-  <div id="urls"></div>
+  <div id="urls">
+    <p>No URLS yet...</p>
+  </div>
 
   <script>
     // State
