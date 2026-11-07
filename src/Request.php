@@ -9,6 +9,7 @@ final class Request {
   public array $body;
   public array $headers;
   public string $full;
+  public string $ip;
 
   public function __construct() {
     $this->method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -16,6 +17,7 @@ final class Request {
     $this->query = $_GET ?? NULL;
     $this->headers = $this->getHeaders();
     $this->body = $this->parseBody();
+    $this->ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
 
     // Construct full URL
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";

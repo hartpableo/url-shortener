@@ -63,12 +63,12 @@ require_once __DIR__ . '/header.tpl.php';
       state.urls.forEach(url => {
         urlsListWrapper.insertAdjacentHTML("beforeend", `
           <article>
-            <h4>${decodeURIComponent(url.shortVersion)}</h4>
+            <h4>${decodeURIComponent(url.short_version)}</h4>
             <ul>
-              <li>Original: ${decodeURIComponent(url.originalUrl)}</li>
-              <li>Visit Count: ${url.visitCount}</li>
-              <li>Created: ${url.createdAt}</li>
-              <li>Updated: ${url.updatedAt}</li>
+              <li>Original: ${decodeURIComponent(url.original_url)}</li>
+              <li>Visit Count: ${url.visit_count}</li>
+              <li>Created: ${url.created_at}</li>
+              <li>Updated: ${url.updated_at}</li>
             </ul>
           </article>
         `);

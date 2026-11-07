@@ -7,8 +7,12 @@ use UrlShortener\Request;
 use UrlShortener\Response\InternalServerErrorResponse;
 use UrlShortener\Response\NotFoundResponse;
 use UrlShortener\Response\ResponseInterface;
+use UrlShortener\Session;
 
 require_once __DIR__ . '/autoloader.php';
+require_once __DIR__ . '/helpers.php';
+
+session_start();
 
 $request = new Request();
 $requestUri = $request->uri;
@@ -19,6 +23,16 @@ function request(): Request {
 
   if ($instance === NULL) {
     $instance = new Request();
+  }
+
+  return $instance;
+}
+
+function session(): ?Session {
+  static $instance = NULL;
+
+  if ($instance === NULL) {
+    $instance = new Session();
   }
 
   return $instance;

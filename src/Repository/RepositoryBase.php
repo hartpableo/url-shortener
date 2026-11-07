@@ -216,4 +216,8 @@ class RepositoryBase {
 
     return [$whereClauses, $whereBindings];
   }
+
+  private function sanitizePropertyToColumn(string $property): string {
+    return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $property));
+  }
 }

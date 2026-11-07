@@ -5,6 +5,7 @@ namespace UrlShortener\Controller;
 use UrlShortener\Entity\ShortUrl;
 use UrlShortener\Repository\ShortUrlRepository;
 use UrlShortener\Response\HtmlResponse;
+use UrlShortener\Response\InternalServerErrorResponse;
 use UrlShortener\Response\JsonResponse;
 use UrlShortener\Response\NotFoundResponse;
 use UrlShortener\Response\RedirectResponse;
@@ -28,15 +29,29 @@ class ShortUrlController {
   }
 
   public function route(): RedirectResponse|string|NULL {
+    $request = request();
+    $session = session();
     $shortUrl = $this->shortUrlRepository->findBy([
-      'short_version' => urlencode(request()->uri)
+      'short_version' => urlencode($request->uri)
     ]);
 
     if (!$shortUrl) {
-      return new NotFoundResponse('Not Found', TRUE)();
+      return new NotFoundResponse(
+        return: TRUE
+      )();
     }
 
-//    $updatedShortUrl = $this->shortUrlRepository->
+    $cacheKey = 'visitor_' . md5($shortUrl->id . $request->ip);
+
+    if (empty($session->get($cacheKey)) || (time() - $session->get($cacheKey)) > 2) {
+      $session->set($cacheKey, time());
+      $updated = $this->shortUrlRepository->update($shortUrl->withIncrementedVisit());
+      if (!$updated) {
+        return new InternalServerErrorResponse(
+          return: TRUE
+        )();
+      }
+    }
 
     return new RedirectResponse(urldecode($shortUrl->originalUrl));
   }

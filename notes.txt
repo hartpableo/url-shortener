@@ -1,4 +1,5 @@
-1. visitor count
+1. [x] visitor count
 2. delete
 3. caching
+4. rate limit
 

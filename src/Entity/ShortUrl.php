@@ -22,7 +22,7 @@ class ShortUrl extends EntityBase {
 
   public function withIncrementedVisit(): self {
     $self = clone $this;
-    $self->visitCount = $this->visitCount + 1;
+    $self->visitCount = $self->visitCount + 1;
     $self->updatedAt = new DateTimeImmutable('now', new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
     return $self;
   }
