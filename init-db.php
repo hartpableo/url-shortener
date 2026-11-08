@@ -37,7 +37,9 @@ CREATE TABLE IF NOT EXISTS `ip_address` (
 -- Add FK for ip_address relaionship with short_url
 ALTER TABLE `ip_address`
   ADD CONSTRAINT FK_IP_ADDRESS_SHORT_URL FOREIGN KEY (short_url)
-  REFERENCES `short_url` (id);
+  REFERENCES `short_url` (id)
+  ON DELETE CASCADE
+;
 SQL);
 
 if ($dbMigrated === FALSE) {
