@@ -17,7 +17,7 @@ class ShortUrl extends EntityBase {
     $now = (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
 
     $this->createdAt = $this->createdAt ?? $now;
-    $this->updatedAt  = $this->updatedAt ?? $now;
+    $this->updatedAt = $this->updatedAt ?? $now;
   }
 
   public function withIncrementedVisit(): self {
