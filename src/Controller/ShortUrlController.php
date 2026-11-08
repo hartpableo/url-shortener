@@ -138,4 +138,46 @@ class ShortUrlController {
       ]
     ]);
   }
+
+  public function delete(): JsonResponse {
+    $request = request();
+
+    if ($request->method === 'OPTIONS') {
+      error_log('is options header' . PHP_EOL, 3, __DIR__ . '/test.log');
+      return new JsonResponse([
+        'ok' => TRUE,
+      ], 204);
+    }
+
+    $deleted = $this->shortUrlRepository->delete([
+      'id' => $request->input('id')
+    ]);
+
+    if (!$deleted) {
+      return new JsonResponse(
+        [
+          'ok' => FALSE,
+          'messages' => [
+            [
+              'type' => 'error',
+              'message' => 'Failed when deleting your entry. Try again.'
+            ]
+          ]
+        ],
+        500
+      );
+    }
+
+    return new JsonResponse(
+      [
+        'ok' => TRUE,
+        'messages' => [
+          [
+            'type' => 'success',
+            'message' => 'Removed short URL.'
+          ]
+        ]
+      ],
+    );
+  }
 }

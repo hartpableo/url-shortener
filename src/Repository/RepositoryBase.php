@@ -31,10 +31,7 @@ class RepositoryBase {
       "INSERT INTO %s (%s) VALUES (%s)",
       $this->table,
       implode(', ', $columns),
-      implode(', ', array_map(
-        fn($i) => ':' . $i,
-        array_keys($params)
-      ))
+      implode(', ', array_keys($params))
     );
 
     $stmt = $this->db->prepare($query);

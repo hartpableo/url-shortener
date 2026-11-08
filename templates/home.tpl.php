@@ -38,13 +38,12 @@ require_once __DIR__ . '/header.tpl.php';
   </form>
 
   <div id="urls">
-    <p>No URLS yet...</p>
+    <p>No URLs yet...</p>
   </div>
 
   <script>
     // State
     let state = {
-      isSubmitting: false,
       messages: [],
       isFetchingUrls: false,
       urls: []
@@ -57,7 +56,10 @@ require_once __DIR__ . '/header.tpl.php';
 
     // Render URLs list
     const renderUrlsList = () => {
-      if (!state.urls.length) return;
+      if (!state.urls.length) {
+        urlsListWrapper.innerHTML = `<p>No URLs yet...</p>`;
+        return;
+      }
 
       urlsListWrapper.innerHTML = "";
       state.urls.forEach(url => {
@@ -70,16 +72,18 @@ require_once __DIR__ . '/header.tpl.php';
               <li>Created: ${url.created_at}</li>
               <li>Updated: ${url.updated_at}</li>
             </ul>
+            <button class="delete" type="button" data-target="${url.id}"><u>Delete</u></button>
           </article>
         `);
-      })
-    }
+      });
+    };
 
     // Get URLs
     const getUrls = async () => {
       if (state.isFetchingUrls) {
         return;
       }
+      console.log(1, state.urls);
 
       try {
         state.isFetchingUrls = true;
@@ -96,17 +100,11 @@ require_once __DIR__ . '/header.tpl.php';
         state.isFetchingUrls = false;
         renderUrlsList();
       }
-    }
+    };
 
     // Update state
     const updateState = () => {
-      // Submitting state
-      if (state.isSubmitting) {
-        form.setAttribute("data-is-submitting", "");
-      } else {
-        form.removeAttribute("data-is-submitting");
-        getUrls();
-      }
+      getUrls();
 
       // Status messages
       messagesWrapper.innerHTML = "";
@@ -123,7 +121,7 @@ require_once __DIR__ . '/header.tpl.php';
         messagesWrapper.innerHTML = "";
         messagesWrapper.setAttribute("hidden", "hidden");
       }
-    }
+    };
 
     // Submit form
     const submitForm = async (payload) => {
@@ -137,15 +135,14 @@ require_once __DIR__ . '/header.tpl.php';
       }
 
       return resJson;
-    }
+    };
 
     updateState();
     getUrls();
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      state.isSubmitting = true;
-      updateState();
+      form.setAttribute("data-is-submitting", "");
 
       submitForm({
         originalUrl: e.currentTarget.querySelector("#url").value,
@@ -155,7 +152,7 @@ require_once __DIR__ . '/header.tpl.php';
           if (data?.messages?.length) {
             data.messages.forEach(m => {
               state.messages.push(m);
-            })
+            });
           }
         })
         .catch(error => {
@@ -173,9 +170,39 @@ require_once __DIR__ . '/header.tpl.php';
           }
         })
         .finally(() => {
-          state.isSubmitting = false;
+          form.removeAttribute("data-is-submitting");
           updateState();
-        })
+        });
+    });
+
+    document.addEventListener("click", async event => {
+      const {target} = event;
+      const deleteBtn = target.closest("button.delete[data-target]");
+      if (deleteBtn) {
+        if (confirm("Do you want to delete this short URL?")) {
+          try {
+            const res = await fetch("/delete", {
+              method: "DELETE",
+              body: JSON.stringify({
+                id: deleteBtn.dataset.target,
+              })
+            });
+            const json = await res.json();
+            if (json?.messages?.length) {
+              json.messages.forEach(m => {
+                state.messages.push(m);
+              });
+            }
+          } catch (e) {
+            state.messages.push({
+              type: "error",
+              message: "Something went wrong. Try again."
+            });
+          } finally {
+            updateState();
+          }
+        }
+      }
     });
   </script>
 

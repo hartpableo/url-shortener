@@ -19,6 +19,11 @@ return [
     'method' => ['POST'],
   ],
   [
+    'uri' => '/delete',
+    'callback' => [new ShortUrlController(), 'delete'],
+    'method' => ['DELETE', 'OPTIONS'],
+  ],
+  [
     'uri' => '/{:short_version}',
     'callback' => [new ShortUrlController(), 'route'],
     'args' => [
