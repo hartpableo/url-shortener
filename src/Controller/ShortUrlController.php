@@ -2,7 +2,9 @@
 
 namespace UrlShortener\Controller;
 
+use UrlShortener\Entity\IpAddress;
 use UrlShortener\Entity\ShortUrl;
+use UrlShortener\Repository\IpAddressRepository;
 use UrlShortener\Repository\ShortUrlRepository;
 use UrlShortener\Response\HtmlResponse;
 use UrlShortener\Response\InternalServerErrorResponse;
@@ -12,9 +14,11 @@ use UrlShortener\Response\RedirectResponse;
 
 class ShortUrlController {
   private ShortUrlRepository $shortUrlRepository;
+  private IpAddressRepository $ipAddressRepository;
 
   public function __construct() {
     $this->shortUrlRepository = new ShortUrlRepository();
+    $this->ipAddressRepository = new IpAddressRepository();
   }
 
   public function index(): HtmlResponse {
@@ -28,7 +32,7 @@ class ShortUrlController {
     ]);
   }
 
-  public function route(): RedirectResponse|string|NULL {
+  public function route(): InternalServerErrorResponse|string|RedirectResponse|null {
     $request = request();
     $session = session();
     $shortUrl = $this->shortUrlRepository->findBy([
@@ -41,8 +45,24 @@ class ShortUrlController {
       )();
     }
 
-    $cacheKey = 'visitor_' . md5($shortUrl->id . $request->ip);
+    // Save unique visitor
+    $ipAddress = $this->ipAddressRepository->findBy([
+      'short_url' => $shortUrl->id,
+      'ip_address' => IpAddress::hashIpAddress($request->ip)
+    ]);
+    if (empty($ipAddress)) {
+      $saved = $this->ipAddressRepository->insert(new IpAddress(
+        ipAddress: IpAddress::hashIpAddress($request->ip),
+        shortUrl: $shortUrl->id
+      ));
 
+      if (!$saved) {
+        return new InternalServerErrorResponse();
+      }
+    }
+
+    // Increment visitor count
+    $cacheKey = 'visitor_' . md5($shortUrl->id . $request->ip);
     if (empty($session->get($cacheKey)) || (time() - $session->get($cacheKey)) > 2) {
       $session->set($cacheKey, time());
       $updated = $this->shortUrlRepository->update($shortUrl->withIncrementedVisit());
@@ -143,7 +163,7 @@ class ShortUrlController {
     $request = request();
 
     if ($request->method === 'OPTIONS') {
-      error_log('is options header' . PHP_EOL, 3, __DIR__ . '/test.log');
+//      error_log('is options header' . PHP_EOL, 3, __DIR__ . '/test.log');
       return new JsonResponse([
         'ok' => TRUE,
       ], 204);

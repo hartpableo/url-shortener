@@ -62,13 +62,16 @@ require_once __DIR__ . '/header.tpl.php';
       }
 
       urlsListWrapper.innerHTML = "";
+      const {location: {protocol, hostname}} = window;
       state.urls.forEach(url => {
+        // console.log({url});
         urlsListWrapper.insertAdjacentHTML("beforeend", `
           <article>
-            <h4>${decodeURIComponent(url.short_version)}</h4>
+            <h4><a href="${protocol}${decodeURIComponent(url.short_version)}" target="_blank" rel="noreferrer nofollow">${decodeURIComponent(url.short_version)}</a></h4>
             <ul>
               <li>Original: ${decodeURIComponent(url.original_url)}</li>
               <li>Visit Count: ${url.visit_count}</li>
+              <li>Unique Visit Count: ${url.unique_visit_count}</li>
               <li>Created: ${url.created_at}</li>
               <li>Updated: ${url.updated_at}</li>
             </ul>

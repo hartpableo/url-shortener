@@ -34,7 +34,7 @@ class ShortUrlRepository extends RepositoryBase {
           visitCount: $entity['visit_count'],
           createdAt: $entity['created_at'],
           updatedAt: $entity['updated_at']
-        )->toArray();
+        )->toArray(includePrivateSet: TRUE);
       },
       $all['data']
     );

@@ -13,10 +13,25 @@ class RepositoryBase {
     $this->db = new Database()->getConnection();
   }
 
+  public function count(array $args) {
+    [$whereClauses, $whereBindings] = $this->buildWhereClauses($args);
+
+    $query = 'SELECT COUNT(*) FROM ' . $this->table;
+
+    if (!empty($whereClauses)) {
+      $query .= " WHERE " . implode(' AND ', $whereClauses);
+    }
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute($whereBindings);
+    return $stmt->fetchColumn();
+  }
+
   public function insert(EntityBase $entity): bool {
     $columns = [];
     $params = [];
 
+//    dd($entity->toArray());
     foreach ($entity->toArray() as $column => $value) {
       if ($column === 'id') {
         continue;
@@ -42,6 +57,7 @@ class RepositoryBase {
     $params = [];
     $updateStatement = [];
 
+//    dd($entity->toArray());
     foreach ($entity->toArray() as $column => $value) {
       if ($column === 'id') {
         continue;
